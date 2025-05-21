@@ -35,3 +35,6 @@ mod rollout;
 mod safety;
 mod user_notification;
 pub mod util;
+pub mod auth_utils;
+#[cfg(test)]
+mod github_copilot_tests;

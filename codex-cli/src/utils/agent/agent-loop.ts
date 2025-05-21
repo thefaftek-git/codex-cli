@@ -306,7 +306,7 @@ export class AgentLoop {
     this.sessionId = getSessionId() || randomUUID().replaceAll("-", "");
     // Configure OpenAI client with optional timeout (ms) from environment
     const timeoutMs = OPENAI_TIMEOUT_MS;
-    const apiKey = this.config.apiKey ?? process.env["OPENAI_API_KEY"] ?? "";
+    const apiKey = this.config.apiKey ?? process.env["COPILOT_API_KEY"] ?? "";
     const baseURL = getBaseUrl(this.provider);
 
     this.oai = new OpenAI({
@@ -322,6 +322,10 @@ export class AgentLoop {
         originator: ORIGIN,
         version: CLI_VERSION,
         session_id: this.sessionId,
+        'user-agent': 'GithubCopilot/1.155.0',
+        'editor-Plugin-version': 'copilot.vim/1.16.0',
+        "Editor-Version": 'Codex/0.1.0',
+        "Copilot-Integration-Id": 'vscode-chat',
         ...(OPENAI_ORGANIZATION
           ? { "OpenAI-Organization": OPENAI_ORGANIZATION }
           : {}),
@@ -340,6 +344,10 @@ export class AgentLoop {
           originator: ORIGIN,
           version: CLI_VERSION,
           session_id: this.sessionId,
+          'user-agent': 'GithubCopilot/1.155.0',
+          'Editor-plugin-version': 'copilot.vim/1.16.0',
+          "Editor-Version": 'Codex/0.1.0',
+          "Copilot-Integration-Id": 'vscode-chat',
           ...(OPENAI_ORGANIZATION
             ? { "OpenAI-Organization": OPENAI_ORGANIZATION }
             : {}),

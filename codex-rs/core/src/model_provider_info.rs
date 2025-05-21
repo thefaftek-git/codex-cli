@@ -87,6 +87,16 @@ pub fn built_in_model_providers() -> HashMap<String, ModelProviderInfo> {
             },
         ),
         (
+            "githubcopilot",
+            P {
+                name: "GitHub Copilot".into(),
+                base_url: "https://api.githubcopilot.com".into(),
+                env_key: Some("GITHUB_COPILOT_TOKEN".into()),
+                env_key_instructions: Some("Set the GitHub Copilot token as an environment variable. You can get this from ~/.config/github-copilot/hosts.json".into()),
+                wire_api: WireApi::Chat,
+            },
+        ),
+        (
             "openrouter",
             P {
                 name: "OpenRouter".into(),
@@ -160,4 +170,9 @@ pub fn built_in_model_providers() -> HashMap<String, ModelProviderInfo> {
     .into_iter()
     .map(|(k, v)| (k.to_string(), v))
     .collect()
+}
+
+/// Get model provider info by key from built-in providers
+pub fn get_model_provider_info_by_key(key: &str) -> Option<ModelProviderInfo> {
+    built_in_model_providers().get(key).cloned()
 }

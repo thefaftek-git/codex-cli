@@ -4,8 +4,10 @@ use codex_cli::SeatbeltCommand;
 use codex_cli::create_sandbox_policy;
 use codex_cli::proto;
 use codex_cli::seatbelt;
+use codex_core::config::extract_copilot_token;
 use codex_exec::Cli as ExecCli;
 use codex_tui::Cli as TuiCli;
+use std::env;
 
 use crate::proto::ProtoCli;
 
@@ -63,7 +65,38 @@ enum DebugCommand {
 struct ReplProto {}
 
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
+async fn main() -> anyhow::Result<()> {    // Set up logging first
+    if env::var("RUST_LOG").is_err() {
+        unsafe { env::set_var("RUST_LOG", "info"); }
+    }
+    tracing_subscriber::fmt::init();
+    
+    // Try to load GitHub Copilot token if it's not already set
+    if env::var("GITHUB_COPILOT_TOKEN").is_err() {
+            tracing::debug!("No GitHub Copilot token found in config");
+            // Try using auth_utils to extract the token from the standard location
+            if let Ok(client) = reqwest::Client::builder().build() {
+                match codex_core::auth_utils::extract_github_oauth_token() {
+                    Some(oauth_token) => {
+                        tracing::debug!("Found GitHub Copilot OAuth token");
+                        // We have the OAuth token but we need to get the API token
+                        match codex_core::auth_utils::get_github_copilot_api_token(&client).await {
+                            Ok(api_token) => {
+                                tracing::debug!("Successfully obtained GitHub Copilot API token");
+                                unsafe { env::set_var("GITHUB_COPILOT_TOKEN", api_token.api_key); }
+                            }
+                            Err(e) => {
+                                tracing::debug!("Failed to obtain GitHub Copilot API token: {}", e);
+                            }
+                        }
+                    }
+                    None => {
+                        tracing::debug!("No GitHub Copilot OAuth token found");
+                    }
+                }
+            }
+    }
+    
     let cli = MultitoolCli::parse();
 
     match cli.subcommand {

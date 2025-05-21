@@ -115,12 +115,58 @@ impl ModelClient {
             client: reqwest::Client::new(),
             provider,
         }
+    }    /// For GitHub Copilot, ensure we have a valid API token
+    /// 
+    /// This method checks if:
+    /// 1. We have a token from the environment or provider
+    /// 2. If not, it attempts to refresh the token
+    /// 3. Validates the token is not expired
+    async fn ensure_valid_github_copilot_token(&self) -> Result<Option<String>> {
+        if self.provider.name == "GitHub Copilot" {
+            // Try to get the token from environment or provider
+            if let Ok(Some(token)) = self.provider.api_key() {
+                // We have a token, but we don't know if it's valid
+                // For now, assume it's valid since we don't store the expiration time
+                return Ok(Some(token));
+            }
+
+            // Token not found in environment, try to get it from auth_utils
+            match crate::auth_utils::get_github_copilot_api_token(&self.client).await {
+                Ok(token) => {
+                    if token.is_valid() {
+                        debug!(
+                            "Successfully refreshed GitHub Copilot token, expires at {:?}",
+                            token.expires_at
+                        );
+                        return Ok(Some(token.api_key));
+                    } else {
+                        debug!("Retrieved GitHub Copilot token is expired");
+                        return Err(crate::error::CodexErr::Auth("GitHub Copilot token is expired, please log in again using VS Code".into()));
+                    }
+                }                Err(err) => {
+                    debug!("Failed to get GitHub Copilot token: {}", err);
+                    return Err(crate::error::CodexErr::EnvVar(
+                        crate::error::EnvVarError {
+                            var: "GITHUB_COPILOT_TOKEN".to_string(),
+                            instructions: Some("Set the GitHub Copilot token as an environment variable. You can get this from ~/.config/github-copilot/hosts.json".to_string()),
+                        }
+                    ));
+                }
+            }
+        }
+
+        // For other providers, just return None
+        Ok(None)
     }
 
     /// Dispatches to either the Responses or Chat implementation depending on
-    /// the provider config.  Public callers always invoke `stream()` – the
-    /// specialised helpers are private to avoid accidental misuse.
+    /// the provider config.  Public callers always invoke `stream()` – the    /// specialised helpers are private to avoid accidental misuse.
     pub async fn stream(&self, prompt: &Prompt) -> Result<ResponseStream> {
+        // For GitHub Copilot, ensure we have a valid token before streaming
+        if self.provider.name == "GitHub Copilot" {
+            self.ensure_valid_github_copilot_token().await?;
+        }
+        
         match self.provider.wire_api {
             WireApi::Responses => self.stream_responses(prompt).await,
             WireApi::Chat => {

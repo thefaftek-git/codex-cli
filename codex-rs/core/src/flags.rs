@@ -8,6 +8,8 @@ env_flags! {
 
     /// Fallback when the provider-specific key is not set.
     pub OPENAI_API_KEY: Option<&str> = None;
+    /// GitHub Copilot token
+    pub GITHUB_COPILOT_TOKEN: Option<&str> = None;
     pub OPENAI_TIMEOUT_MS: Duration = Duration::from_millis(300_000), |value| {
         value.parse().map(Duration::from_millis)
     };

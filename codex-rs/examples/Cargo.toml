@@ -1,0 +1,12 @@
+[package]
+name = "codex-examples"
+version = "0.0.0"
+edition = "2024"
+
+[[example]]
+name = "github_copilot_example"
+path = "github_copilot_example.rs"
+
+[dependencies]
+codex-core = { path = "../core" }
+tokio = { version = "1.32", features = ["rt", "rt-multi-thread", "macros"] }

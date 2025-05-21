@@ -1,0 +1,198 @@
+    Blocking waiting for file lock on build directory
+   Compiling proc-macro2 v1.0.95
+   Compiling unicode-ident v1.0.18
+   Compiling cfg-if v1.0.0
+   Compiling libc v0.2.172
+   Compiling autocfg v1.4.0
+   Compiling memchr v2.7.4
+   Compiling equivalent v1.0.2
+   Compiling itoa v1.0.15
+   Compiling once_cell v1.21.3
+   Compiling log v0.4.27
+   Compiling smallvec v1.15.0
+   Compiling regex-syntax v0.8.5
+   Compiling serde v1.0.219
+   Compiling ryu v1.0.20
+   Compiling pin-project-lite v0.2.16
+   Compiling shlex v1.3.0
+   Compiling fnv v1.0.7
+   Compiling allocator-api2 v0.2.21
+   Compiling bitflags v2.9.0
+   Compiling hashbrown v0.15.2
+   Compiling regex-syntax v0.6.29
+   Compiling stable_deref_trait v1.2.0
+   Compiling foldhash v0.1.5
+   Compiling futures-core v0.3.31
+   Compiling pkg-config v0.3.32
+   Compiling serde_json v1.0.140
+   Compiling lazy_static v1.5.0
+   Compiling litemap v0.7.5
+   Compiling writeable v0.5.5
+   Compiling bytes v1.10.1
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name cfg_if --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cfg-if-1.0.0/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("compiler_builtins", "core", "rustc-dep-of-std"))' -C metadata=adb3b86315a062fd -C extra-filename=-f52ed1292e79c10c --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name unicode_ident --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/unicode-ident-1.0.18/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=052ba14cf376a63a -C extra-filename=-43c3b454bec3b76f --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/cfg-if-f52ed1292e79c10c/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+warning: build failed, waiting for other jobs to finish...
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name autocfg --edition=2015 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/autocfg-1.4.0/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=93e0477ba11705f2 -C extra-filename=-6353892153b58c07 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/autocfg-6353892153b58c07/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name memchr --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memchr-2.7.4/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="alloc"' --cfg 'feature="default"' --cfg 'feature="std"' --cfg 'feature="use_std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "compiler_builtins", "core", "default", "libc", "logging", "rustc-dep-of-std", "std", "use_std"))' -C metadata=7b25dd8b6d05afa9 -C extra-filename=-9ebb5ace2a3b3019 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.95/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="default"' --cfg 'feature="proc-macro"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "nightly", "proc-macro", "span-locations"))' -C metadata=e1755b0d7d0809a5 -C extra-filename=-3c7cf2cb897bcc27 --out-dir /mnt/d/models/codex/codex-rs/target/debug/build/proc-macro2-3c7cf2cb897bcc27 -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/memchr-9ebb5ace2a3b3019/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/proc-macro2-3c7cf2cb897bcc27/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.172/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="default"' --cfg 'feature="extra_traits"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("align", "const-extern-fn", "default", "extra_traits", "rustc-dep-of-std", "rustc-std-workspace-core", "std", "use_std"))' -C metadata=7659fe2e5cc9b45d -C extra-filename=-5194667ed4e2806f --out-dir /mnt/d/models/codex/codex-rs/target/debug/build/libc-5194667ed4e2806f -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/libc-5194667ed4e2806f/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name equivalent --edition=2015 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/equivalent-1.0.2/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=c2afa8cb0d62c295 -C extra-filename=-738c042213bdad6a --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name itoa --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/itoa-1.0.15/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("no-panic"))' -C metadata=a129eb8276bb3ed4 -C extra-filename=-1d34ec624624d608 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/equivalent-738c042213bdad6a/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/itoa-1d34ec624624d608/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name once_cell --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/once_cell-1.21.3/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="alloc"' --cfg 'feature="default"' --cfg 'feature="race"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "atomic-polyfill", "critical-section", "default", "parking_lot", "portable-atomic", "race", "std", "unstable"))' -C metadata=19494f07b4fc8c9e -C extra-filename=-dfa4fa0cc8a504f1 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name log --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/log-0.4.27/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("kv", "kv_serde", "kv_std", "kv_sval", "kv_unstable", "kv_unstable_serde", "kv_unstable_std", "kv_unstable_sval", "max_level_debug", "max_level_error", "max_level_info", "max_level_off", "max_level_trace", "max_level_warn", "release_max_level_debug", "release_max_level_error", "release_max_level_info", "release_max_level_off", "release_max_level_trace", "release_max_level_warn", "serde", "std", "sval", "sval_ref", "value-bag"))' -C metadata=a24a00a8cd531e9a -C extra-filename=-301258bcf5dbcba7 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/once_cell-dfa4fa0cc8a504f1/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/log-301258bcf5dbcba7/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name smallvec --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/smallvec-1.15.0/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="const_generics"' --cfg 'feature="const_new"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("arbitrary", "bincode", "const_generics", "const_new", "debugger_visualizer", "drain_filter", "drain_keep_rest", "impl_bincode", "malloc_size_of", "may_dangle", "serde", "specialization", "union", "unty", "write"))' -C metadata=b0b4a6e1eed775fd -C extra-filename=-87003cf86438f759 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name regex_syntax --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-syntax-0.8.5/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="default"' --cfg 'feature="std"' --cfg 'feature="unicode"' --cfg 'feature="unicode-age"' --cfg 'feature="unicode-bool"' --cfg 'feature="unicode-case"' --cfg 'feature="unicode-gencat"' --cfg 'feature="unicode-perl"' --cfg 'feature="unicode-script"' --cfg 'feature="unicode-segment"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("arbitrary", "default", "std", "unicode", "unicode-age", "unicode-bool", "unicode-case", "unicode-gencat", "unicode-perl", "unicode-script", "unicode-segment"))' -C metadata=37c69b9dc3e9c449 -C extra-filename=-e9911f1b4a36081d --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/smallvec-87003cf86438f759/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/regex-syntax-e9911f1b4a36081d/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name ryu --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ryu-1.0.20/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("no-panic", "small"))' -C metadata=506548dfe3e39670 -C extra-filename=-9f5ba4537d50f128 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name pin_project_lite --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pin-project-lite-0.2.16/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --warn=unreachable_pub --warn=unexpected_cfgs '--warn=clippy::undocumented_unsafe_blocks' '--warn=clippy::transmute_undefined_repr' '--warn=clippy::trailing_empty_array' --warn=single_use_lifetimes --warn=rust_2018_idioms '--warn=clippy::pedantic' --warn=non_ascii_idents '--warn=clippy::inline_asm_x86_att_syntax' --warn=improper_ctypes_definitions --warn=improper_ctypes --warn=deprecated_safe '--warn=clippy::default_union_representation' '--warn=clippy::as_underscore' '--warn=clippy::as_ptr_cast_mut' '--warn=clippy::all' '--allow=clippy::unreadable_literal' '--allow=clippy::type_complexity' '--allow=clippy::too_many_lines' '--allow=clippy::too_many_arguments' '--allow=clippy::struct_field_names' '--allow=clippy::struct_excessive_bools' '--allow=clippy::single_match_else' '--allow=clippy::single_match' '--allow=clippy::similar_names' '--allow=clippy::range_plus_one' '--allow=clippy::nonminimal_bool' '--allow=clippy::naive_bytecount' '--allow=clippy::module_name_repetitions' '--allow=clippy::missing_errors_doc' '--allow=clippy::manual_range_contains' '--allow=clippy::manual_assert' '--allow=clippy::lint_groups_priority' '--allow=clippy::incompatible_msrv' '--allow=clippy::float_cmp' '--allow=clippy::doc_markdown' '--allow=clippy::declare_interior_mutable_const' '--allow=clippy::cast_lossless' '--allow=clippy::borrow_as_ptr' '--allow=clippy::bool_assert_comparison' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=993972bacc6798ae -C extra-filename=-12250a02a17ca230 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name fnv --edition=2015 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/fnv-1.0.7/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="default"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "std"))' -C metadata=498a77d5d66ff26f -C extra-filename=-e363583e1b6fdae8 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/ryu-9f5ba4537d50f128/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name shlex --edition=2015 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/shlex-1.3.0/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="default"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "std"))' -C metadata=1766c085886af9e9 -C extra-filename=-2bc6e0a0e5c36322 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/fnv-e363583e1b6fdae8/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/pin-project-lite-12250a02a17ca230/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/shlex-2bc6e0a0e5c36322/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.219/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="alloc"' --cfg 'feature="default"' --cfg 'feature="derive"' --cfg 'feature="serde_derive"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "default", "derive", "rc", "serde_derive", "std", "unstable"))' -C metadata=cbadc469d77a1ef1 -C extra-filename=-54b3315e8c037a75 --out-dir /mnt/d/models/codex/codex-rs/target/debug/build/serde-54b3315e8c037a75 -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/serde-54b3315e8c037a75/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name allocator_api2 --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/allocator-api2-0.2.21/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --warn=unexpected_cfgs --check-cfg 'cfg(no_global_oom_handling)' --cfg 'feature="alloc"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "default", "fresh-rust", "nightly", "serde", "std"))' -C metadata=2f1047456424bc8f -C extra-filename=-824e74dd2449b33c --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name memchr --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memchr-2.7.4/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no --cfg 'feature="alloc"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "compiler_builtins", "core", "default", "libc", "logging", "rustc-dep-of-std", "std", "use_std"))' -C metadata=b6d026648021617e -C extra-filename=-31c5404861909b70 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name bitflags --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bitflags-2.9.0/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("arbitrary", "bytemuck", "compiler_builtins", "core", "example_generated", "rustc-dep-of-std", "serde", "std"))' -C metadata=3a7f0282c75ac93a -C extra-filename=-a31b82e9ca12bca2 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/allocator-api2-824e74dd2449b33c/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/memchr-31c5404861909b70/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/bitflags-a31b82e9ca12bca2/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name hashbrown --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashbrown-0.15.2/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "allocator-api2", "compiler_builtins", "core", "default", "default-hasher", "equivalent", "inline-more", "nightly", "raw-entry", "rayon", "rustc-dep-of-std", "rustc-internal-api", "serde"))' -C metadata=2bcc23322c1de9fc -C extra-filename=-7348eef67d69a954 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/hashbrown-7348eef67d69a954/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name regex_syntax --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-syntax-0.6.29/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="default"' --cfg 'feature="unicode"' --cfg 'feature="unicode-age"' --cfg 'feature="unicode-bool"' --cfg 'feature="unicode-case"' --cfg 'feature="unicode-gencat"' --cfg 'feature="unicode-perl"' --cfg 'feature="unicode-script"' --cfg 'feature="unicode-segment"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "unicode", "unicode-age", "unicode-bool", "unicode-case", "unicode-gencat", "unicode-perl", "unicode-script", "unicode-segment"))' -C metadata=a9ba43cc8e2ad643 -C extra-filename=-0602e6492ddb8c9b --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/regex-syntax-0602e6492ddb8c9b/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name stable_deref_trait --edition=2015 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/stable_deref_trait-1.2.0/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="alloc"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "default", "std"))' -C metadata=8d9d36a133b5a1b7 -C extra-filename=-567eccf8a716e5cb --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name foldhash --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/foldhash-0.1.5/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "std"))' -C metadata=f5f3e79550e945a1 -C extra-filename=-00930e0ca342dcfd --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/stable_deref_trait-567eccf8a716e5cb/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/foldhash-00930e0ca342dcfd/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name futures_core --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-core-0.3.31/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --warn=unreachable_pub --warn=unexpected_cfgs --warn=single_use_lifetimes --warn=rust_2018_idioms --warn=missing_debug_implementations --check-cfg 'cfg(futures_sanitizer)' --cfg 'feature="alloc"' --cfg 'feature="default"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "cfg-target-has-atomic", "default", "portable-atomic", "std", "unstable"))' -C metadata=8ea636c0f77c4de9 -C extra-filename=-616deeb37b97cb01 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name pkg_config --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pkg-config-0.3.32/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=c2ea010a99f8a59a -C extra-filename=-0734678050773e2d --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/pkg-config-0734678050773e2d/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/futures-core-616deeb37b97cb01/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name lazy_static --edition=2015 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lazy_static-1.5.0/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("spin", "spin_no_std"))' -C metadata=cbc95396d4f7d077 -C extra-filename=-82b154891a502d9d --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/lazy_static-82b154891a502d9d/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name litemap --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/litemap-0.7.5/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="alloc"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "databake", "default", "serde", "testing", "yoke"))' -C metadata=c292c3fa3ce67cac -C extra-filename=-42dce6d7d5086f9b --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/litemap-42dce6d7d5086f9b/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name writeable --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/writeable-0.5.5/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("bench", "either"))' -C metadata=dd79cca07aceb120 -C extra-filename=-db6a66dd17f3debd --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name bytes --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bytes-1.10.1/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --warn=unexpected_cfgs --check-cfg 'cfg(loom)' --cfg 'feature="default"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "extra-platforms", "serde", "std"))' -C metadata=41baf2c9ad1c2db9 -C extra-filename=-23ef84c3ede8db87 --out-dir /mnt/d/models/codex/codex-rs/target/debug/deps -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2021 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.140/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="default"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "arbitrary_precision", "default", "float_roundtrip", "indexmap", "preserve_order", "raw_value", "std", "unbounded_depth"))' -C metadata=e4c5575cd64517f1 -C extra-filename=-4c5ba5cc83b1d733 --out-dir /mnt/d/models/codex/codex-rs/target/debug/build/serde_json-4c5ba5cc83b1d733 -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/bytes-23ef84c3ede8db87/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/serde_json-4c5ba5cc83b1d733/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+     Running `/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2018 /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.219/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="default"' --cfg 'feature="derive"' --cfg 'feature="serde_derive"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "default", "derive", "rc", "serde_derive", "std", "unstable"))' -C metadata=d2c2c75dff349591 -C extra-filename=-6afee01521c0501d --out-dir /mnt/d/models/codex/codex-rs/target/debug/build/serde-6afee01521c0501d -L dependency=/mnt/d/models/codex/codex-rs/target/debug/deps --cap-lints allow`
+error: failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/serde-6afee01521c0501d/invoked.timestamp`
+
+Caused by:
+  No such file or directory (os error 2)
+error: could not parse/generate dep info at: /mnt/d/models/codex/codex-rs/target/debug/deps/unicode_ident-43c3b454bec3b76f.d
+
+Caused by:
+  failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/unicode-ident-43c3b454bec3b76f/dep-lib-unicode_ident`
+
+Caused by:
+  No such file or directory (os error 2)
+error: could not parse/generate dep info at: /mnt/d/models/codex/codex-rs/target/debug/deps/writeable-db6a66dd17f3debd.d
+
+Caused by:
+  failed to write `/mnt/d/models/codex/codex-rs/target/debug/.fingerprint/writeable-db6a66dd17f3debd/dep-lib-writeable`
+
+Caused by:
+  No such file or directory (os error 2)

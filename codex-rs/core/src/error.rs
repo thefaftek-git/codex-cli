@@ -42,11 +42,21 @@ pub enum CodexErr {
     ///
     /// The Session loop treats this as a transient error and will automatically retry the turn.
     #[error("stream disconnected before completion: {0}")]
-    Stream(String),
-
-    /// Returned by run_command_stream when the spawned child process timed out (10s).
+    Stream(String),    /// Returned by run_command_stream when the spawned child process timed out (10s).
     #[error("timeout waiting for child process to exit")]
     Timeout,
+
+    /// Returned when authentication fails, such as with GitHub Copilot
+    #[error("authentication error: {0}")]
+    Auth(String),
+    
+    /// Returned when GitHub Copilot authentication fails
+    #[error("GitHub Copilot authentication failed: {0}")]
+    CopilotAuth(String),
+
+    /// Returned when GitHub Copilot API returns an error
+    #[error("GitHub Copilot API error: {0}")]
+    CopilotApi(String),
 
     /// Returned by run_command_stream when the child could not be spawned (its stdout/stderr pipes
     /// could not be captured). Analogous to the previous `CodexError::Spawn` variant.

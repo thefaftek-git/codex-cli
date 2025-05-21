@@ -17,7 +17,7 @@ import { parse } from "shell-quote";
 import { resolvePathAgainstWorkdir } from "src/approvals.js";
 import { PATCH_SUFFIX } from "src/parse-apply-patch.js";
 
-const DEFAULT_TIMEOUT_MS = 10_000; // 10 seconds
+const DEFAULT_TIMEOUT_MS = 300_000; // 10 seconds
 
 function requiresShell(cmd: Array<string>): boolean {
   // If the command is a single string that contains shell operators,

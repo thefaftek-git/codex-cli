@@ -24,7 +24,12 @@ type OpenAIClientConfig = {
 export function createOpenAIClient(
   config: OpenAIClientConfig | AppConfig,
 ): OpenAI | AzureOpenAI {
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = {
+    'User-Agent': 'GithubCopilot/1.155.0',
+    "Editor-Version": 'Codex/0.1.0',
+    "Copilot-Integration-Id": 'vscode-chat',
+    "Copilot-Vision-Request": "true"
+  };
   if (OPENAI_ORGANIZATION) {
     headers["OpenAI-Organization"] = OPENAI_ORGANIZATION;
   }

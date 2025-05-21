@@ -204,6 +204,15 @@ impl std::ops::Deref for FunctionCallOutputPayload {
     }
 }
 
+impl ResponseItem {
+    pub fn user_text(text: &str) -> Self {
+        Self::Message {
+            role: "user".to_string(),
+            content: vec![ContentItem::InputText { text: text.to_string() }],
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #![allow(clippy::unwrap_used)]

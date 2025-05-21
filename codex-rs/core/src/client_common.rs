@@ -33,6 +33,16 @@ pub struct Prompt {
 }
 
 impl Prompt {
+    pub fn new(prompt: &str, instructions: Option<&str>) -> Self {
+        Self {
+            input: vec![ResponseItem::user_text(prompt)],
+            instructions: instructions.map(ToString::to_string),
+            prev_id: None,
+            store: false,
+            extra_tools: HashMap::new(),
+        }
+    }
+
     pub(crate) fn get_full_instructions(&self) -> Cow<str> {
         match &self.instructions {
             Some(instructions) => {

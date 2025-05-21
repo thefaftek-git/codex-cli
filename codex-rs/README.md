@@ -25,6 +25,33 @@ This folder is the root of a Cargo workspace. It contains quite a bit of experim
 
 The CLI can be configured via a file named `config.toml`. By default, configuration is read from `~/.codex/config.toml`, though the `CODEX_HOME` environment variable can be used to specify a directory other than `~/.codex`.
 
+### Model Providers
+
+You can configure codex-rs to use different model providers:
+
+```toml
+# Default config using OpenAI
+provider = "openai"
+model = "gpt-4-turbo"
+```
+
+Supported providers include:
+
+- **openai**: Standard OpenAI API (default)
+- **azure**: Azure OpenAI service
+- **githubcopilot**: GitHub Copilot API (uses your Copilot subscription)
+
+To use GitHub Copilot:
+
+```toml
+provider = "githubcopilot"
+model = "gpt-4"
+```
+
+See [GitHub Copilot documentation](./docs/github-copilot.md) for more details on setting up and using GitHub Copilot with codex-rs.
+
+### Other Configuration Options
+
 The `config.toml` file supports the following options:
 
 ### model

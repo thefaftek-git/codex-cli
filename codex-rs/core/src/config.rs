@@ -9,6 +9,7 @@ use crate::protocol::SandboxPolicy;
 use dirs::home_dir;
 use serde::Deserialize;
 use std::collections::HashMap;
+use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 
@@ -16,6 +17,58 @@ use std::path::PathBuf;
 /// files are *silently truncated* to this size so we do not take up too much of
 /// the context window.
 pub(crate) const PROJECT_DOC_MAX_BYTES: usize = 32 * 1024; // 32 KiB
+
+/// Location of GitHub Copilot configuration files
+fn copilot_config_dir() -> PathBuf {
+    if cfg!(target_os = "windows") {
+        home_dir().unwrap_or_default().join("AppData").join("Local").join("github-copilot")
+    } else {
+        home_dir().unwrap_or_default().join(".config").join("github-copilot")
+    }
+}
+
+/// Extract GitHub Copilot token from configuration files
+pub fn extract_copilot_token() -> Option<String> {
+    let hosts_path = copilot_config_dir().join("hosts.json");
+    if !hosts_path.exists() {
+        return None;
+    }
+
+    match fs::read_to_string(hosts_path) {
+        Ok(contents) => {
+            match serde_json::from_str::<serde_json::Value>(&contents) {
+                Ok(json) => {
+                    // Modern GitHub Copilot format: {"github.com:AppId":{"oauth_token":"ghu_XXX"}}
+                    // or older format: {"github.com":{"oauth_token":"ghu_XXX"}}
+                    
+                    // First try to find a key starting with "github.com"
+                    let mut token: Option<String> = None;
+                    
+                    for (key, value) in json.as_object().iter().flat_map(|obj| obj.iter()) {
+                        if key.starts_with("github.com") {
+                            if let Some(oauth) = value.get("oauth_token").and_then(|t| t.as_str()) {
+                                token = Some(oauth.to_string());
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Fallback to exact "github.com" key (older format)
+                    if token.is_none() {
+                        token = json.get("github.com")
+                            .and_then(|github| github.get("oauth_token"))
+                            .and_then(|token| token.as_str())
+                            .map(|s| s.to_string());
+                    }
+                    
+                    token
+                }
+                Err(_) => None,
+            }
+        }
+        Err(_) => None,
+    }
+}
 
 /// Application configuration loaded from disk and merged with overrides.
 #[derive(Debug, Clone, PartialEq)]

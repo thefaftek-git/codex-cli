@@ -57,10 +57,11 @@ export function getGithubCopilotOauthToken(): string | undefined {
 }
 
 export async function refreshCopilotToken(): Promise<{ apiKey: string; expiresAt: number } | undefined> {
+  console.log("[copilot-auth] Attempting to refresh Copilot token...");
   const oauthToken = getGithubCopilotOauthToken();
 
   if (!oauthToken) {
-    console.warn("GitHub Copilot OAuth token not found. Cannot refresh API token.");
+    console.warn("[copilot-auth] GitHub Copilot OAuth token not found. Cannot refresh API token.");
     return undefined;
   }
 
@@ -73,6 +74,7 @@ export async function refreshCopilotToken(): Promise<{ apiKey: string; expiresAt
   };
 
   try {
+    console.log("[copilot-auth] Fetching new token from GitHub API...");
     const response = await fetch("https://api.github.com/copilot_internal/v2/token", {
       method: "GET",
       headers: headers,
@@ -83,27 +85,34 @@ export async function refreshCopilotToken(): Promise<{ apiKey: string; expiresAt
       currentApiKey = responseData.token;
       currentApiKeyExpiresAt = responseData.expires_at * 1000; // Convert seconds to milliseconds
 
-      console.log(`GitHub Copilot API token refreshed. Expires at: ${new Date(currentApiKeyExpiresAt).toISOString()}`);
+      console.log(`[copilot-auth] GitHub Copilot API token refreshed successfully. New API Key: ${currentApiKey ? currentApiKey.substring(0, 10) + '...' : 'undefined'}, Expires at: ${currentApiKeyExpiresAt ? new Date(currentApiKeyExpiresAt).toISOString() : 'undefined'}`);
       return { apiKey: currentApiKey, expiresAt: currentApiKeyExpiresAt };
     } else {
       const errorBody = await response.text();
-      console.error(`Failed to refresh GitHub Copilot token. Status: ${response.status}. Body: ${errorBody}`);
+      console.error(`[copilot-auth] Failed to refresh GitHub Copilot token. Status: ${response.status}. Body: ${errorBody}`);
       currentApiKey = undefined;
       currentApiKeyExpiresAt = undefined;
+      console.log("[copilot-auth] Token refresh failed. API key cleared.");
       return undefined;
     }
   } catch (error) {
-    console.error("Error during GitHub Copilot token refresh:", error);
+    console.error("[copilot-auth] Error during GitHub Copilot token refresh:", error);
     currentApiKey = undefined;
     currentApiKeyExpiresAt = undefined;
+    console.log("[copilot-auth] Token refresh resulted in an error. API key cleared.");
     return undefined;
   }
 }
 
 export function getCachedCopilotToken(): { apiKey: string; expiresAt: number } | undefined {
+  console.log("[copilot-auth] Checking for cached Copilot token...");
+  console.log(`[copilot-auth] Current cached API Key: ${currentApiKey ? currentApiKey.substring(0, 10) + '...' : 'undefined'}, Expires At: ${currentApiKeyExpiresAt ? new Date(currentApiKeyExpiresAt).toISOString() : 'undefined'}`);
+  
   if (currentApiKey && currentApiKeyExpiresAt && currentApiKeyExpiresAt > Date.now() + 5 * 60 * 1000) {
     // Token exists and is valid for at least 5 more minutes
+    console.log("[copilot-auth] Valid cached token found.");
     return { apiKey: currentApiKey, expiresAt: currentApiKeyExpiresAt };
   }
+  console.log("[copilot-auth] No valid cached token found or token is expiring soon.");
   return undefined;
 }

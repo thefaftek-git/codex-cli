@@ -324,24 +324,29 @@ export class AgentLoop {
     const baseURL = getBaseUrl(this.provider);
 
     // Initialize this.oai (OpenAI client)
+    const commonDefaultHeaders: Record<string, string> = {
+      originator: ORIGIN,
+      version: CLI_VERSION,
+      session_id: this.sessionId,
+      'user-agent': 'GithubCopilot/1.155.0',
+      'editor-plugin-version': 'copilot.vim/1.16.0', // Standardized key
+      'Editor-Version': 'Codex/0.1.0',
+      'Copilot-Integration-Id': 'vscode-chat',
+    };
+
+    if (OPENAI_ORGANIZATION) {
+      commonDefaultHeaders["OpenAI-Organization"] = OPENAI_ORGANIZATION;
+    }
+    if (OPENAI_PROJECT) {
+      commonDefaultHeaders["OpenAI-Project"] = OPENAI_PROJECT;
+    }
+
     if (this.provider.toLowerCase() === "azure") {
       this.oai = new AzureOpenAI({
         apiKey: apiKey || undefined, // Use the resolved API key
         baseURL,
         apiVersion: AZURE_OPENAI_API_VERSION,
-        defaultHeaders: {
-          originator: ORIGIN,
-          version: CLI_VERSION,
-          session_id: this.sessionId,
-          'user-agent': 'GithubCopilot/1.155.0',
-          'Editor-plugin-version': 'copilot.vim/1.16.0',
-          "Editor-Version": 'Codex/0.1.0',
-          "Copilot-Integration-Id": 'vscode-chat',
-          ...(OPENAI_ORGANIZATION
-            ? { "OpenAI-Organization": OPENAI_ORGANIZATION }
-            : {}),
-          ...(OPENAI_PROJECT ? { "OpenAI-Project": OPENAI_PROJECT } : {}),
-        },
+        defaultHeaders: commonDefaultHeaders,
         httpAgent: PROXY_URL ? new HttpsProxyAgent(PROXY_URL) : undefined,
         ...(timeoutMs !== undefined ? { timeout: timeoutMs } : {}),
       });
@@ -349,41 +354,7 @@ export class AgentLoop {
       this.oai = new OpenAI({
         apiKey: apiKey || undefined, // Use the resolved API key
         baseURL,
-        defaultHeaders: {
-          originator: ORIGIN,
-        version: CLI_VERSION,
-        session_id: this.sessionId,
-        'user-agent': 'GithubCopilot/1.155.0',
-        'editor-Plugin-version': 'copilot.vim/1.16.0',
-        "Editor-Version": 'Codex/0.1.0',
-        "Copilot-Integration-Id": 'vscode-chat',
-        ...(OPENAI_ORGANIZATION
-          ? { "OpenAI-Organization": OPENAI_ORGANIZATION }
-          : {}),
-        ...(OPENAI_PROJECT ? { "OpenAI-Project": OPENAI_PROJECT } : {}),
-      },
-      httpAgent: PROXY_URL ? new HttpsProxyAgent(PROXY_URL) : undefined,
-      ...(timeoutMs !== undefined ? { timeout: timeoutMs } : {}),
-    });
-
-    if (this.provider.toLowerCase() === "azure") {
-      this.oai = new AzureOpenAI({
-        apiKey,
-        baseURL,
-        apiVersion: AZURE_OPENAI_API_VERSION,
-        defaultHeaders: {
-          originator: ORIGIN,
-          version: CLI_VERSION,
-          session_id: this.sessionId,
-          'user-agent': 'GithubCopilot/1.155.0',
-          'Editor-plugin-version': 'copilot.vim/1.16.0',
-          "Editor-Version": 'Codex/0.1.0',
-          "Copilot-Integration-Id": 'vscode-chat',
-          ...(OPENAI_ORGANIZATION
-            ? { "OpenAI-Organization": OPENAI_ORGANIZATION }
-            : {}),
-          ...(OPENAI_PROJECT ? { "OpenAI-Project": OPENAI_PROJECT } : {}),
-        },
+        defaultHeaders: commonDefaultHeaders,
         httpAgent: PROXY_URL ? new HttpsProxyAgent(PROXY_URL) : undefined,
         ...(timeoutMs !== undefined ? { timeout: timeoutMs } : {}),
       });
@@ -580,18 +551,19 @@ export class AgentLoop {
       throw new Error("AgentLoop has been terminated");
     }
 
+    // GitHub Copilot token refresh logic
     if (this.provider.toLowerCase() === "githubcopilot") {
-      let currentToken = getCachedCopilotToken();
-      if (!currentToken || !currentToken.apiKey) { // Check if token is missing or invalid
+      let tokenInfo = getCachedCopilotToken();
+      if (!tokenInfo) {
+        log("[codex-cli/agent-loop] GitHub Copilot token not cached or expired, attempting refresh...");
         this.onLoading(true); // Indicate loading during token refresh
-        log("[codex-cli] GitHub Copilot token not cached or invalid, attempting refresh...");
         try {
-          const refreshedToken = await refreshCopilotToken();
-          if (refreshedToken && refreshedToken.apiKey) {
-            this.oai.apiKey = refreshedToken.apiKey; // Update the OpenAI client instance
-            log("[codex-cli] GitHub Copilot token refreshed successfully.");
+          tokenInfo = await refreshCopilotToken();
+          if (tokenInfo && tokenInfo.apiKey) {
+            this.oai.apiKey = tokenInfo.apiKey; // Update the OpenAI client instance
+            log("[codex-cli/agent-loop] GitHub Copilot token refreshed successfully in agent-loop.");
           } else {
-            log("[codex-cli] GitHub Copilot token refresh failed. API calls may fail.");
+            log("[codex-cli/agent-loop] GitHub Copilot token refresh failed. API calls may fail.");
             this.onItem({
               id: `error-copilot-token-refresh-failed-${Date.now()}`,
               type: "message",
@@ -607,7 +579,7 @@ export class AgentLoop {
             return; // Stop if token refresh fails and no valid key
           }
         } catch (error) {
-          log(`[codex-cli] Error during GitHub Copilot token refresh: ${error}`);
+          log(`[codex-cli/agent-loop] Error during GitHub Copilot token refresh: ${error}`);
           this.onItem({
             id: `error-copilot-token-refresh-error-${Date.now()}`,
             type: "message",
@@ -625,12 +597,17 @@ export class AgentLoop {
           this.onLoading(false);
         }
       } else {
-        // If there's a cached token, ensure the client is using it (it should be from constructor, but double check)
-         if (this.oai.apiKey !== currentToken?.apiKey) { // Added optional chaining for currentToken
-           if (currentToken?.apiKey) this.oai.apiKey = currentToken.apiKey; // Check apiKey exists before assigning
-         }
+        // If there's a valid cached token, ensure the client is using it.
+        // This handles cases where the agent loop might be re-used or apiKey was set initially in constructor.
+        if (this.oai.apiKey !== tokenInfo.apiKey) {
+           log("[codex-cli/agent-loop] Updating OAI client with cached GitHub Copilot token.");
+           this.oai.apiKey = tokenInfo.apiKey;
+        } else {
+           log("[codex-cli/agent-loop] OAI client already has the valid cached GitHub Copilot token.");
+        }
       }
     }
+
     // ---------------------------------------------------------------------
     // Top‑level error wrapper so that known transient network issues like
     // `ERR_STREAM_PREMATURE_CLOSE` do not crash the entire CLI process.

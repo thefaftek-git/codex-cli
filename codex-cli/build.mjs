@@ -84,5 +84,6 @@ esbuild
     sourcemap: isDevBuild ? "inline" : true,
     plugins,
     inject: ["./require-shim.js"],
+    loader: { '.ts': 'ts', '.tsx': 'tsx' }, // Add this line
   })
   .catch(() => process.exit(1));

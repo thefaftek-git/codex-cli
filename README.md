@@ -106,6 +106,7 @@ export OPENAI_API_KEY="your-api-key-here"
 > - xai
 > - groq
 > - arceeai
+> - githubcopilot
 > - any other provider that is compatible with the OpenAI API
 >
 > If you use a provider other than OpenAI, you will need to set the API key for the provider in the config file or in the environment variable as:
@@ -475,6 +476,16 @@ export AZURE_OPENAI_API_VERSION="2025-03-01-preview" (Optional)
 export OPENROUTER_API_KEY="your-openrouter-key-here"
 
 # Similarly for other providers
+
+# GitHub Copilot
+# For GitHub Copilot, authentication is handled via an OAuth token.
+# Provide your GitHub Copilot OAuth token (usually starts with `ghu_`) using this environment variable:
+export GITHUB_COPILOT_OAUTH_TOKEN="your-github-copilot-oauth-token"
+# If this variable is not set, Codex CLI will attempt to read the OAuth token
+# from the GitHub Copilot extension's `hosts.json` file (e.g., `~/.config/github-copilot/hosts.json` on Linux/macOS 
+# or `%LOCALAPPDATA%\github-copilot\hosts.json` on Windows).
+# The CLI uses this OAuth token to automatically fetch and refresh the necessary API key.
+# You generally do not need to set COPILOT_API_KEY directly when using this OAuth method.
 ```
 
 ---

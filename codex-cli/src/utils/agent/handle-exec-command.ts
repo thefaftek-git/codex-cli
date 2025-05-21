@@ -309,9 +309,8 @@ async function getSandbox(runInSandbox: boolean): Promise<SandboxType> {
         );
       }
     }
-    else if (CODEX_UNSAFE_ALLOW_NO_SANDBOX) {
-      // Allow running without a sandbox if the user has explicitly marked the
-      // environment as already being sufficiently locked-down.
+    else {
+
       return SandboxType.NONE;
     }
 

@@ -28,6 +28,7 @@
   ],
   "dependencies": {
     "@inkjs/ui": "^2.0.0",
+    "@types/node-fetch": "^2.6.12",
     "chalk": "^5.2.0",
     "diff": "^7.0.0",
     "dotenv": "^16.1.4",
@@ -42,6 +43,7 @@
     "marked": "^15.0.7",
     "marked-terminal": "^7.3.0",
     "meow": "^13.2.0",
+    "node-fetch": "^3.3.2",
     "open": "^10.1.0",
     "openai": "^4.95.1",
     "package-manager-detector": "^1.2.0",

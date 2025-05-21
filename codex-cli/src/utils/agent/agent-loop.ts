@@ -18,8 +18,10 @@ import {
   OPENAI_ORGANIZATION,
   OPENAI_PROJECT,
   getBaseUrl,
+  getApiKey, // Added for constructor logic
   AZURE_OPENAI_API_VERSION,
 } from "../config.js";
+import { getCachedCopilotToken, refreshCopilotToken } from "../copilot-auth.js";
 import { log } from "../logger/log.js";
 import { parseToolCallArguments } from "../parsers.js";
 import { responsesCreateViaChatCompletions } from "../responses.js";
@@ -306,20 +308,52 @@ export class AgentLoop {
     this.sessionId = getSessionId() || randomUUID().replaceAll("-", "");
     // Configure OpenAI client with optional timeout (ms) from environment
     const timeoutMs = OPENAI_TIMEOUT_MS;
-    const apiKey = this.config.apiKey ?? process.env["COPILOT_API_KEY"] ?? "";
+    
+    let apiKey: string | undefined;    if (this.provider.toLowerCase() === "githubcopilot") {
+      // For Copilot, initially try to get a cached key.
+      // The actual refresh will happen before the first API call in run().
+      apiKey = getApiKey(this.provider);
+      // Set OPENAI_API_KEY environment variable directly
+      if (apiKey) {
+        process.env["OPENAI_API_KEY"] = apiKey;
+      }
+    } else {
+      // For other providers, use the config or environment variable directly.
+      apiKey = this.config.apiKey ?? getApiKey(this.provider);
+    }
+    // If no specific API key was found for other providers, and it's OpenAI,
+    // it might fall back to process.env["OPENAI_API_KEY"] via getApiKey's default path.
+
     const baseURL = getBaseUrl(this.provider);
 
-    this.oai = new OpenAI({
-      // The OpenAI JS SDK only requires `apiKey` when making requests against
-      // the official API.  When running unit‑tests we stub out all network
-      // calls so an undefined key is perfectly fine.  We therefore only set
-      // the property if we actually have a value to avoid triggering runtime
-      // errors inside the SDK (it validates that `apiKey` is a non‑empty
-      // string when the field is present).
-      ...(apiKey ? { apiKey } : {}),
-      baseURL,
-      defaultHeaders: {
-        originator: ORIGIN,
+    // Initialize this.oai (OpenAI client)
+    if (this.provider.toLowerCase() === "azure") {
+      this.oai = new AzureOpenAI({
+        apiKey: apiKey || undefined, // Use the resolved API key
+        baseURL,
+        apiVersion: AZURE_OPENAI_API_VERSION,
+        defaultHeaders: {
+          originator: ORIGIN,
+          version: CLI_VERSION,
+          session_id: this.sessionId,
+          'user-agent': 'GithubCopilot/1.155.0',
+          'Editor-plugin-version': 'copilot.vim/1.16.0',
+          "Editor-Version": 'Codex/0.1.0',
+          "Copilot-Integration-Id": 'vscode-chat',
+          ...(OPENAI_ORGANIZATION
+            ? { "OpenAI-Organization": OPENAI_ORGANIZATION }
+            : {}),
+          ...(OPENAI_PROJECT ? { "OpenAI-Project": OPENAI_PROJECT } : {}),
+        },
+        httpAgent: PROXY_URL ? new HttpsProxyAgent(PROXY_URL) : undefined,
+        ...(timeoutMs !== undefined ? { timeout: timeoutMs } : {}),
+      });
+    } else {
+      this.oai = new OpenAI({
+        apiKey: apiKey || undefined, // Use the resolved API key
+        baseURL,
+        defaultHeaders: {
+          originator: ORIGIN,
         version: CLI_VERSION,
         session_id: this.sessionId,
         'user-agent': 'GithubCopilot/1.155.0',
@@ -368,8 +402,13 @@ export class AgentLoop {
       () => this.execAbortController?.abort(),
       { once: true },
     );
+    }
+  
+    // (Make sure this method is inside the AgentLoop class definition.)
   }
-
+  
+  // Move handleFunctionCall inside the AgentLoop class, just after the constructor or other methods.
+  /* Place the following method inside the AgentLoop class body: */
   private async handleFunctionCall(
     item: ResponseFunctionToolCall,
   ): Promise<Array<ResponseInputItem>> {
@@ -386,39 +425,39 @@ export class AgentLoop {
     // whether it originated from the `/responses` or the `/chat/completions`
     // endpoint – their JSON differs slightly.
     // ---------------------------------------------------------------------
-
+  
     const isChatStyle =
       // The chat endpoint nests function details under a `function` key.
       // We conservatively treat the presence of this field as a signal that
       // we are dealing with the chat format.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (item as any).function != null;
-
+  
     const name: string | undefined = isChatStyle
       ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (item as any).function?.name
       : // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (item as any).name;
-
+  
     const rawArguments: string | undefined = isChatStyle
       ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (item as any).function?.arguments
       : // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (item as any).arguments;
-
+  
     // The OpenAI "function_call" item may have either `call_id` (responses
     // endpoint) or `id` (chat endpoint).  Prefer `call_id` if present but fall
     // back to `id` to remain compatible.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const callId: string = (item as any).call_id ?? (item as any).id;
-
+  
     const args = parseToolCallArguments(rawArguments ?? "{}");
     log(
       `handleFunctionCall(): name=${
         name ?? "undefined"
       } callId=${callId} args=${rawArguments}`,
     );
-
+  
     if (args == null) {
       const outputItem: ResponseInputItem.FunctionCallOutput = {
         type: "function_call_output",
@@ -427,7 +466,7 @@ export class AgentLoop {
       };
       return [outputItem];
     }
-
+  
     const outputItem: ResponseInputItem.FunctionCallOutput = {
       type: "function_call_output",
       // `call_id` is mandatory – ensure we never send `undefined` which would
@@ -435,7 +474,7 @@ export class AgentLoop {
       call_id: callId,
       output: "no function found",
     };
-
+  
     // We intentionally *do not* remove this `callId` from the `pendingAborts`
     // set right away.  The output produced below is only queued up for the
     // *next* request to the OpenAI API – it has not been delivered yet.  If
@@ -446,10 +485,10 @@ export class AgentLoop {
     // successfully lets the next `run()` differentiate between an aborted
     // tool call (needs the synthetic output) and a completed one (cleared
     // below in the `flush()` helper).
-
+  
     // used to tell model to stop if needed
     const additionalItems: Array<ResponseInputItem> = [];
-
+  
     // TODO: allow arbitrary function calls (beyond shell/container.exec)
     if (name === "container.exec" || name === "shell") {
       const {
@@ -465,12 +504,12 @@ export class AgentLoop {
         this.execAbortController?.signal,
       );
       outputItem.output = JSON.stringify({ output: outputText, metadata });
-
+  
       if (additionalItemsFromExec) {
         additionalItems.push(...additionalItemsFromExec);
       }
     }
-
+  
     return [outputItem, ...additionalItems];
   }
 
@@ -545,6 +584,63 @@ export class AgentLoop {
     input: Array<ResponseInputItem>,
     previousResponseId: string = "",
   ): Promise<void> {
+    if (this.terminated) {
+      throw new Error("AgentLoop has been terminated");
+    }    if (this.provider.toLowerCase() === "githubcopilot") {
+      let currentToken = getCachedCopilotToken();
+      if (!currentToken || !currentToken.apiKey) { // Check if token is missing or invalid
+        this.onLoading(true); // Indicate loading during token refresh
+        log("[codex-cli] GitHub Copilot token not cached or invalid, attempting refresh...");
+        try {
+          const refreshedToken = await refreshCopilotToken();
+          if (refreshedToken && refreshedToken.apiKey) {
+            this.oai.apiKey = refreshedToken.apiKey; // Update the OpenAI client instance
+            process.env["OPENAI_API_KEY"] = refreshedToken.apiKey; // Also set environment variable
+            log("[codex-cli] GitHub Copilot token refreshed successfully.");
+          } else {
+            log("[codex-cli] GitHub Copilot token refresh failed. API calls may fail.");
+            this.onItem({
+              id: `error-copilot-token-refresh-failed-${Date.now()}`,
+              type: "message",
+              role: "system",
+              content: [
+                {
+                  type: "input_text",
+                  text: "⚠️ GitHub Copilot token refresh failed. Please check your OAuth token or network connection. API calls may fail.",
+                },
+              ],
+            });
+            this.onLoading(false);
+            return; // Stop if token refresh fails and no valid key
+          }
+        } catch (error) {
+          log(`[codex-cli] Error during GitHub Copilot token refresh: ${error}`);
+          this.onItem({
+            id: `error-copilot-token-refresh-error-${Date.now()}`,
+            type: "message",
+            role: "system",
+            content: [
+              {
+                type: "input_text",
+                text: `⚠️ An error occurred during GitHub Copilot token refresh: ${error instanceof Error ? error.message : String(error)}. API calls may fail.`,
+              },
+            ],
+          });
+          this.onLoading(false);
+          return; // Stop on error
+        } finally {
+          this.onLoading(false);
+        }
+      } else {
+        // If there's a cached token, ensure the client is using it (it should be from constructor, but double check)
+         if (this.oai.apiKey !== currentToken?.apiKey) { // Added optional chaining for currentToken
+           if (currentToken?.apiKey) {
+             this.oai.apiKey = currentToken.apiKey; // Check apiKey exists before assigning
+             process.env["OPENAI_API_KEY"] = currentToken.apiKey; // Also set environment variable
+           }
+         }
+      }
+    }
     // ---------------------------------------------------------------------
     // Top‑level error wrapper so that known transient network issues like
     // `ERR_STREAM_PREMATURE_CLOSE` do not crash the entire CLI process.

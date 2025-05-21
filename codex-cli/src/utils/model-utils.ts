@@ -15,7 +15,11 @@ export const RECOMMENDED_MODELS: Array<string> = ["o4-mini", "o3"];
  * enters interactive mode.  The request is made exactly once during the
  * lifetime of the process and the results are cached for subsequent calls.
  */
-async function fetchModels(provider: string): Promise<Array<string>> {
+async function fetchModels(provider: string): Promise<Array<string>> {  // Special handling for GitHub Copilot - return all models with model_picker_enabled: true
+  if (provider.toLowerCase() === "githubcopilot") {
+    return ["gpt-4o", "o1", "o3-mini", "claude-3.5-sonnet", "claude-3.7-sonnet", "claude-3.7-sonnet-thought", "gemini-2.0-flash-001", "gemini-2.5-pro", "o4-mini", "gpt-4.1"];
+  }
+  
   // If the user has not configured an API key we cannot retrieve the models.
   if (!getApiKey(provider)) {
     throw new Error("No API key configured for provider: " + provider);

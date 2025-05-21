@@ -64,16 +64,18 @@ export async function refreshCopilotToken(): Promise<{ apiKey: string; expiresAt
     return undefined;
   }
 
-  const headers = {
-    "Authorization": `token ${oauthToken}`,
-    "Accept": "application/json",
-    "User-Agent": "GithubCopilot/1.155.0", // Example User-Agent
-    "Editor-Version": "Codex/0.1.0", // Align with your CLI/tool
-    "Editor-Plugin-Version": "copilot.vim/1.16.0", // Example plugin version
-  };
-
+  // First try the proper GitHub Copilot token exchange API
   try {
-    const response = await fetch("https://api.github.com/copilot_internal/v2/token", {
+    const headers = {
+      "Authorization": `Bearer ${oauthToken}`,
+      "Accept": "application/json",
+      "User-Agent": "GithubCopilot/1.155.0", 
+      "Editor-Version": "Codex/0.1.0",
+      "Editor-Plugin-Version": "copilot.vim/1.16.0",
+      "Copilot-Integration-Id": "vscode-chat"
+    };
+
+    const response = await fetch("https://api.githubcopilot.com/copilot_internal/v2/token", {
       method: "GET",
       headers: headers,
     });
@@ -86,17 +88,48 @@ export async function refreshCopilotToken(): Promise<{ apiKey: string; expiresAt
       console.log(`GitHub Copilot API token refreshed. Expires at: ${new Date(currentApiKeyExpiresAt).toISOString()}`);
       return { apiKey: currentApiKey, expiresAt: currentApiKeyExpiresAt };
     } else {
-      const errorBody = await response.text();
-      console.error(`Failed to refresh GitHub Copilot token. Status: ${response.status}. Body: ${errorBody}`);
-      currentApiKey = undefined;
-      currentApiKeyExpiresAt = undefined;
-      return undefined;
+      console.log(`First token exchange attempt failed. Status: ${response.status}. Trying alternative endpoint...`);
+      
+      // Try the GitHub API endpoint if the first one fails
+      const githubHeaders = {
+        "Authorization": `token ${oauthToken}`,
+        "Accept": "application/json",
+        "User-Agent": "GithubCopilot/1.155.0", 
+        "Editor-Version": "Codex/0.1.0",
+        "Editor-Plugin-Version": "copilot.vim/1.16.0"
+      };
+
+      const githubResponse = await fetch("https://api.github.com/copilot_internal/v2/token", {
+        method: "GET",
+        headers: githubHeaders,
+      });
+
+      if (githubResponse.ok) {
+        const data = await githubResponse.json() as { token: string; expires_at: number };
+        currentApiKey = data.token;
+        currentApiKeyExpiresAt = data.expires_at * 1000; // Convert seconds to milliseconds
+
+        console.log(`GitHub Copilot API token refreshed via alternative endpoint. Expires at: ${new Date(currentApiKeyExpiresAt).toISOString()}`);
+        return { apiKey: currentApiKey, expiresAt: currentApiKeyExpiresAt };
+      } else {
+        const errorBody = await githubResponse.text();
+        console.error(`Failed to refresh GitHub Copilot token. Status: ${githubResponse.status}. Body: ${errorBody}`);
+        
+        // As a fallback, try to use the OAuth token itself
+        console.log("Using OAuth token as fallback API key");
+        currentApiKey = oauthToken;
+        currentApiKeyExpiresAt = Date.now() + 3600 * 1000; // Set expiry to 1 hour from now
+        return { apiKey: currentApiKey, expiresAt: currentApiKeyExpiresAt };
+      }
     }
   } catch (error) {
     console.error("Error during GitHub Copilot token refresh:", error);
-    currentApiKey = undefined;
-    currentApiKeyExpiresAt = undefined;
-    return undefined;
+    
+    // As a last resort, use the OAuth token directly
+    console.log("Using OAuth token as fallback API key due to error");
+    currentApiKey = oauthToken;
+    currentApiKeyExpiresAt = Date.now() + 3600 * 1000; // Set expiry to 1 hour from now
+    return { apiKey: currentApiKey, expiresAt: currentApiKeyExpiresAt };
   }
 }
 

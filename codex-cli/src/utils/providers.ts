@@ -51,10 +51,9 @@ export const providers: Record<
     name: "ArceeAI",
     baseURL: "https://conductor.arcee.ai/v1",
     envKey: "ARCEEAI_API_KEY",
-  },
-  githubcopilot: {
+  },  githubcopilot: {
     name: "GitHub Copilot",
-    baseURL: "https://api.githubcopilot.com/v1", // Using this as a placeholder, actual Copilot completions endpoint might differ
+    baseURL: "https://api.githubcopilot.com/",
     envKey: "COPILOT_API_KEY",
   },
 };

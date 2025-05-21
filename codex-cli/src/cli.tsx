@@ -363,32 +363,65 @@ if (cli.flags.free) {
 }
 
 // Set of providers that don't require API keys
-const NO_API_KEY_REQUIRED = new Set(["ollama"]);
+const NO_API_KEY_REQUIRED = new Set(["ollama", "githubcopilot"]);
 
 // Skip API key validation for providers that don't require an API key
 if (!apiKey && !NO_API_KEY_REQUIRED.has(provider.toLowerCase())) {
-  // eslint-disable-next-line no-console
-  console.error(
-    `\n${chalk.red(`Missing ${provider} API key.`)}\n\n` +
-      `Set the environment variable ${chalk.bold(
-        `${provider.toUpperCase()}_API_KEY`,
-      )} ` +
-      `and re-run this command.\n` +
-      `${
-        provider.toLowerCase() === "openai"
-          ? `You can create a key here: ${chalk.bold(
-              chalk.underline("https://platform.openai.com/account/api-keys"),
-            )}\n`
-          : provider.toLowerCase() === "gemini"
-            ? `You can create a ${chalk.bold(
-                `${provider.toUpperCase()}_API_KEY`,
-              )} ` + `in the ${chalk.bold(`Google AI Studio`)}.\n`
-            : `You can create a ${chalk.bold(
-                `${provider.toUpperCase()}_API_KEY`,
-              )} ` + `in the ${chalk.bold(`${provider}`)} dashboard.\n`
-      }`,
-  );
-  process.exit(1);
+  // For GitHub Copilot, try to get the token through proper exchange
+  if (provider.toLowerCase() === "githubcopilot") {
+    try {
+      // Import the necessary functions for token management
+      const { getGithubCopilotOauthToken, refreshCopilotToken } = await import('./utils/copilot-auth.js');
+      
+      // Check if we have an OAuth token
+      const oauthToken = getGithubCopilotOauthToken();
+      
+      if (oauthToken) {
+        // We have an OAuth token, so try to exchange it for an API key
+        console.log("Found GitHub Copilot OAuth token, attempting to exchange for API key...");
+        
+        // Directly refresh the token - this will exchange OAuth token for API key
+        const refreshResult = await refreshCopilotToken();
+        
+        if (refreshResult && refreshResult.apiKey) {
+          console.log(`Successfully exchanged OAuth token for GitHub Copilot API key. Valid until ${new Date(refreshResult.expiresAt).toISOString()}`);
+          apiKey = refreshResult.apiKey;
+          process.env["OPENAI_API_KEY"] = apiKey;
+          process.env["COPILOT_API_KEY"] = apiKey;
+        } else {
+          console.warn("Failed to exchange OAuth token for GitHub Copilot API key.");
+        }
+      }
+    } catch (error) {
+      console.error("Error during GitHub Copilot token exchange:", error);
+    }
+  }
+
+  // If still no API key, show error
+  if (!apiKey) {
+    // eslint-disable-next-line no-console
+    console.error(
+      `\n${chalk.red(`Missing ${provider} API key.`)}\n\n` +
+        `Set the environment variable ${chalk.bold(
+          `${provider.toUpperCase()}_API_KEY`,
+        )} ` +
+        `and re-run this command.\n` +
+        `${
+          provider.toLowerCase() === "openai"
+            ? `You can create a key here: ${chalk.bold(
+                chalk.underline("https://platform.openai.com/account/api-keys"),
+              )}\n`
+            : provider.toLowerCase() === "gemini"
+              ? `You can create a ${chalk.bold(
+                  `${provider.toUpperCase()}_API_KEY`,
+                )} ` + `in the ${chalk.bold(`Google AI Studio`)}.\n`
+              : `You can create a ${chalk.bold(
+                  `${provider.toUpperCase()}_API_KEY`,
+                )} ` + `in the ${chalk.bold(`${provider}`)} dashboard.\n`
+        }`,
+    );
+    process.exit(1);
+  }
 }
 
 const flagPresent = Object.hasOwn(cli.flags, "disableResponseStorage");

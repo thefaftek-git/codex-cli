@@ -111,7 +111,7 @@ export function getBaseUrl(provider: string = "openai"): string | undefined {
 }
 
 export function getApiKey(provider: string = "openai"): string | undefined {
-  if (provider.toLowerCase() === "githubcopilot") {
+  if (provider.toLowerCase() === " ") {
     const cachedToken = getCachedCopilotToken();
     if (cachedToken) {
       return cachedToken.apiKey;

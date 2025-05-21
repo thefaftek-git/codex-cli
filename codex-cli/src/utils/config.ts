@@ -10,6 +10,7 @@ import type { FullAutoErrorMode } from "./auto-approval-mode.js";
 import type { ReasoningEffort } from "openai/resources.mjs";
 
 import { AutoApprovalMode } from "./auto-approval-mode.js";
+import { getCachedCopilotToken } from "./copilot-auth.js";
 import { log } from "./logger/log.js";
 import { providers } from "./providers.js";
 import { config as loadDotenv } from "dotenv";
@@ -110,8 +111,18 @@ export function getBaseUrl(provider: string = "openai"): string | undefined {
 }
 
 export function getApiKey(provider: string = "openai"): string | undefined {
+  if (provider.toLowerCase() === "githubcopilot") {
+    const cachedToken = getCachedCopilotToken();
+    if (cachedToken) {
+      return cachedToken.apiKey;
+    }
+    // If not cached, it will be handled by an explicit refresh before API call in AgentLoop
+    return undefined;
+  }
+
+  // Existing logic for other providers:
   const config = loadConfig();
-  const providersConfig = config.providers ?? providers;
+  const providersConfig = config.providers ?? providers; // providers is from ./providers.js
   const providerInfo = providersConfig[provider.toLowerCase()];
   if (providerInfo) {
     if (providerInfo.name === "Ollama") {
@@ -120,18 +131,20 @@ export function getApiKey(provider: string = "openai"): string | undefined {
     return process.env[providerInfo.envKey];
   }
 
-  // Checking `PROVIDER_API_KEY` feels more intuitive with a custom provider.
   const customApiKey = process.env[`${provider.toUpperCase()}_API_KEY`];
   if (customApiKey) {
     return customApiKey;
   }
 
-  // If the provider not found in the providers list and `OPENAI_API_KEY` is set, use it
+  // Ensure OPENAI_API_KEY is defined in this scope or imported if it's from elsewhere
+  // Assuming OPENAI_API_KEY is a global or accessible variable as per the original file structure
+  // If OPENAI_API_KEY is defined in this file like:
+  // export let OPENAI_API_KEY = process.env["OPENAI_API_KEY"] || "";
+  // then the following is fine.
   if (OPENAI_API_KEY !== "") {
     return OPENAI_API_KEY;
   }
 
-  // We tried.
   return undefined;
 }
 

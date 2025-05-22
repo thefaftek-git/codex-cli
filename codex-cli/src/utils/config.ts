@@ -67,6 +67,10 @@ export const INSTRUCTIONS_FILEPATH = join(CONFIG_DIR, "instructions.md");
 export const OPENAI_TIMEOUT_MS =
   parseInt(process.env["OPENAI_TIMEOUT_MS"] || "0", 10) || undefined;
 export const OPENAI_BASE_URL = process.env["OPENAI_BASE_URL"] || "";
+/**
+ * GitHub Copilot API key (used when provider is "githubcopilot").
+ * Falls back to the COPILOT_API_KEY environment variable.
+ */
 export let COPILOT_API_KEY = process.env["COPILOT_API_KEY"] || "";
 
 export const AZURE_OPENAI_API_VERSION =
@@ -111,13 +115,14 @@ export function getBaseUrl(provider: string = "openai"): string | undefined {
 }
 
 export function getApiKey(provider: string = "openai"): string | undefined {
-  if (provider.toLowerCase() === " ") {
+  // Special handling for GitHub Copilot: use cached token or COPILOT_API_KEY env var
+  if (provider.toLowerCase() === "githubcopilot") {
     const cachedToken = getCachedCopilotToken();
     if (cachedToken) {
       return cachedToken.apiKey;
     }
-    // If not cached, it will be handled by an explicit refresh before API call in AgentLoop
-    return undefined;
+    // Fallback to COPILOT_API_KEY env var; read dynamically to reflect process.env
+    return process.env[providers.githubcopilot.envKey] || undefined;
   }
 
   // Existing logic for other providers:

@@ -36,6 +36,7 @@ import {
   loadConfig,
   PRETTY_PRINT,
   INSTRUCTIONS_FILEPATH,
+  getApiKey as getConfigApiKey,
 } from "./utils/config";
 import {
   getApiKey as fetchApiKey,
@@ -307,28 +308,16 @@ let savedTokens:
     }
   | undefined;
 
-// Try to load existing auth file if present
-try {
-  const home = os.homedir();
-  const authDir = path.join(home, ".codex");
-  const authFile = path.join(authDir, "auth.json");
-  if (fs.existsSync(authFile)) {
-    const data = JSON.parse(fs.readFileSync(authFile, "utf-8"));
-    savedTokens = data.tokens;
-    const lastRefreshTime = data.last_refresh
-      ? new Date(data.last_refresh).getTime()
-      : 0;
-    const expired = Date.now() - lastRefreshTime > 28 * 24 * 60 * 60 * 1000;
-    if (data.OPENAI_API_KEY && !expired) {
-      apiKey = data.OPENAI_API_KEY;
-    }
+// Handle GitHub Copilot provider separately, using COPILOT_API_KEY or cached token
+if (provider.toLowerCase() === "githubcopilot") {
+  const key = getConfigApiKey(provider);
+  if (key) {
+    apiKey = key;
+    process.env["COPILOT_API_KEY"] = key;
+    process.env["OPENAI_API_KEY"] = key; // for legacy consumers
   }
-} catch {
-  // ignore errors
-}
-
-if (cli.flags.login) {
-  apiKey = await fetchApiKey(client.issuer, client.client_id);
+} else {
+  // Try to load existing auth file if present
   try {
     const home = os.homedir();
     const authDir = path.join(home, ".codex");
@@ -336,15 +325,37 @@ if (cli.flags.login) {
     if (fs.existsSync(authFile)) {
       const data = JSON.parse(fs.readFileSync(authFile, "utf-8"));
       savedTokens = data.tokens;
+      const lastRefreshTime = data.last_refresh
+        ? new Date(data.last_refresh).getTime()
+        : 0;
+      const expired = Date.now() - lastRefreshTime > 28 * 24 * 60 * 60 * 1000;
+      if (data.OPENAI_API_KEY && !expired) {
+        apiKey = data.OPENAI_API_KEY;
+      }
     }
   } catch {
-    /* ignore */
+    // ignore errors
   }
-} else if (!apiKey) {
-  apiKey = await fetchApiKey(client.issuer, client.client_id);
+
+  if (cli.flags.login) {
+    apiKey = await fetchApiKey(client.issuer, client.client_id);
+    try {
+      const home = os.homedir();
+      const authDir = path.join(home, ".codex");
+      const authFile = path.join(authDir, "auth.json");
+      if (fs.existsSync(authFile)) {
+        const data = JSON.parse(fs.readFileSync(authFile, "utf-8"));
+        savedTokens = data.tokens;
+      }
+    } catch {
+      /* ignore */
+    }
+  } else if (!apiKey) {
+    apiKey = await fetchApiKey(client.issuer, client.client_id);
+  }
+  // Ensure the API key is available as an environment variable for legacy code
+  process.env["OPENAI_API_KEY"] = apiKey;
 }
-// Ensure the API key is available as an environment variable for legacy code
-process.env["OPENAI_API_KEY"] = apiKey;
 
 if (cli.flags.free) {
   // eslint-disable-next-line no-console
@@ -402,8 +413,11 @@ if (!apiKey && !NO_API_KEY_REQUIRED.has(provider.toLowerCase())) {
     // eslint-disable-next-line no-console
     console.error(
       `\n${chalk.red(`Missing ${provider} API key.`)}\n\n` +
+        // Suggest correct env var: COPILOT_API_KEY for GitHub Copilot, otherwise <PROVIDER>_API_KEY
         `Set the environment variable ${chalk.bold(
-          `${provider.toUpperCase()}_API_KEY`,
+          provider.toLowerCase() === "githubcopilot"
+            ? "COPILOT_API_KEY"
+            : `${provider.toUpperCase()}_API_KEY`,
         )} ` +
         `and re-run this command.\n` +
         `${
@@ -413,10 +427,14 @@ if (!apiKey && !NO_API_KEY_REQUIRED.has(provider.toLowerCase())) {
               )}\n`
             : provider.toLowerCase() === "gemini"
               ? `You can create a ${chalk.bold(
-                  `${provider.toUpperCase()}_API_KEY`,
+                  provider.toLowerCase() === "githubcopilot"
+                    ? "COPILOT_API_KEY"
+                    : `${provider.toUpperCase()}_API_KEY`,
                 )} ` + `in the ${chalk.bold(`Google AI Studio`)}.\n`
               : `You can create a ${chalk.bold(
-                  `${provider.toUpperCase()}_API_KEY`,
+                  provider.toLowerCase() === "githubcopilot"
+                    ? "COPILOT_API_KEY"
+                    : `${provider.toUpperCase()}_API_KEY`,
                 )} ` + `in the ${chalk.bold(`${provider}`)} dashboard.\n`
         }`,
     );

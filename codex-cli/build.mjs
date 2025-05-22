@@ -1,6 +1,22 @@
-import * as esbuild from "esbuild";
+// Core modules
 import * as fs from "fs";
 import * as path from "path";
+import { fileURLToPath, pathToFileURL } from "url";
+
+// Load esbuild: try native module first, then fallback to wasm
+let esbuild;
+try {
+  esbuild = await import("esbuild");
+} catch (err) {
+  console.warn("esbuild native import failed, using esbuild-wasm:", err.message);
+  esbuild = await import("esbuild-wasm");
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  const wasmPath = path.resolve(__dirname, "node_modules/esbuild-wasm/esbuild.wasm");
+  await esbuild.initialize({
+    wasmURL: pathToFileURL(wasmPath).href,
+    worker: false,
+  });
+}
 
 const OUT_DIR = 'dist'
 /**
